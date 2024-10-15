@@ -50,8 +50,6 @@ const struct RegisteredUser allRegisteredUser[] = {
     {{0x83, 0x2C, 0x5D, 0xA6}, "keyless lookin keychain"},
     {{0xD0, 0xC0, 0x27, 0x93}, "erabu mai"}};
 
-int currentAttendedId = 0;
-
 // Inisiasi struct yang akan menampung data pengguna
 // yang sudah tap kartu mereka
 struct UserAttended
@@ -161,10 +159,12 @@ void doAttendanceRecap()
     Serial.println("Output will be in CSV format, please copy the value after this line.");
 
     Serial.println("==============================================");
-    Serial.println("name,time");
+    Serial.println("id,name,time");
 
     for (int i = 0; i < allAttendedUsers.size(); i++)
     {
+      Serial.print(allAttendedUsers[i].id);
+      Serial.print(",");
       Serial.print(allAttendedUsers[i].name);
       Serial.print(",");
       Serial.println(allAttendedUsers[i].time);
@@ -326,9 +326,10 @@ void loop2(void *pvParameters)
             {
               UserAttended user;
 
-              currentAttendedId = ++currentAttendedId;
+              int attendedSize = allAttendedUsers.size();
+              int nextUserId = attendedSize > 0 ? allAttendedUsers[attendedSize - 1].id + 1 : 1;
 
-              user.id = currentAttendedId;
+              user.id = nextUserId;
               user.name = currentUser.name;
               user.time = millis();
 
